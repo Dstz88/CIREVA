@@ -1,0 +1,36 @@
+<?php
+
+namespace Tests\Feature\Auth;
+
+use Tests\TestCase;
+use App\Models\User;
+use App\Models\Booking;
+use App\Models\Transaction;
+use App\Models\Role;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+
+class TransactionPolicyTest extends TestCase
+{
+    use RefreshDatabase;
+
+    public function test_user_can_view_own_transaction()
+    {
+        $role = Role::firstOrCreate(['name' => 'User']);
+        $user = User::factory()->create(['role_id' => $role->id]);
+        $booking = Booking::factory()->create(['user_id' => $user->id]);
+        $transaction = Transaction::factory()->create(['booking_id' => $booking->id]);
+
+        $this->assertTrue($user->can('view', $transaction));
+    }
+
+    public function test_user_cannot_view_others_transaction()
+    {
+        $role = Role::firstOrCreate(['name' => 'User']);
+        $user1 = User::factory()->create(['role_id' => $role->id]);
+        $user2 = User::factory()->create(['role_id' => $role->id]);
+        $booking = Booking::factory()->create(['user_id' => $user2->id]);
+        $transaction = Transaction::factory()->create(['booking_id' => $booking->id]);
+
+        $this->assertFalse($user1->can('view', $transaction));
+    }
+}

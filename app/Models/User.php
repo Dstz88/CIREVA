@@ -10,12 +10,55 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'password'])]
+#[Fillable(['name', 'email', 'password', 'role_id'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
+
+    /**
+     * Get the role associated with the user or resolve via relationship.
+     */
+    public function role(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(Role::class);
+    }
+
+    /**
+     * Mutator to handle backward compatibility for setting role by name or ID.
+     */
+    public function setRoleAttribute($value): void
+    {
+        if (is_numeric($value)) {
+            $this->attributes['role_id'] = $value;
+        } elseif (is_string($value)) {
+            $role = Role::whereRaw('LOWER(name) = ?', [strtolower($value)])->first();
+            if ($role) {
+                $this->attributes['role_id'] = $role->id;
+            }
+        }
+    }
+
+    /**
+     * Accessor fallback when role attribute is requested directly.
+     */
+    public function getRoleAttribute($value)
+    {
+        if ($value !== null) {
+            return $value;
+        }
+
+        return $this->role()->getResults();
+    }
+
+    /**
+     * Get the organizer profile associated with the user.
+     */
+    public function organizerProfile(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(OrganizerProfile::class);
+    }
 
     /**
      * Get the attributes that should be cast.
