@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'password', 'role_id'])]
+#[Fillable(['name', 'email', 'password', 'role', 'role_id'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -33,7 +33,13 @@ class User extends Authenticatable
         if (is_numeric($value)) {
             $this->attributes['role_id'] = $value;
         } elseif (is_string($value)) {
+            $roleName = ucfirst(strtolower($value));
             $role = Role::whereRaw('LOWER(name) = ?', [strtolower($value)])->first();
+            if (!$role) {
+                try {
+                    $role = Role::firstOrCreate(['name' => $roleName]);
+                } catch (\Throwable $e) {}
+            }
             if ($role) {
                 $this->attributes['role_id'] = $role->id;
             }
@@ -50,6 +56,31 @@ class User extends Authenticatable
         }
 
         return $this->role()->getResults();
+    }
+
+    /**
+     * Get normalized role name string (lowercase).
+     */
+    public function getRoleNameAttribute(): string
+    {
+        $role = $this->role;
+        if (is_object($role)) {
+            return strtolower((string) ($role->name ?? ''));
+        }
+        if (is_string($role)) {
+            return strtolower($role);
+        }
+        return '';
+    }
+
+    /**
+     * Check if user has specific role(s).
+     */
+    public function hasRole(string|array $roles): bool
+    {
+        $currentRole = $this->role_name;
+        $rolesArray = array_map('strtolower', (array) $roles);
+        return in_array($currentRole, $rolesArray, true);
     }
 
     /**

@@ -265,6 +265,4 @@
                 </div>
             </div>
         </div>
-    </div>
-</x-public-layout>
 </x-public-layout>

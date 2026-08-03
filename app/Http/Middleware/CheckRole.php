@@ -25,10 +25,7 @@ class CheckRole
             abort(403, 'Unauthorized access.');
         }
 
-        $userRole = $user->role;
-        $userRoleName = is_object($userRole) ? ($userRole->name ?? '') : (string)$userRole;
-
-        if (empty($userRoleName) || strtolower($userRoleName) !== strtolower($role)) {
+        if (!$user->hasRole($role)) {
             abort(403, 'Unauthorized access.');
         }
 

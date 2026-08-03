@@ -33,9 +33,7 @@ class TicketPolicy
      */
     public function create(User $user): bool
     {
-        // Only Admin or Organizer can create new tickets.
-        // Deep verification against the event ownership must be done at the controller level or custom method.
-        return $user->role && in_array($user->role->name, ['Admin', 'Organizer']);
+        return $user->hasRole(['admin', 'organizer']);
     }
 
     /**
@@ -43,7 +41,7 @@ class TicketPolicy
      */
     public function update(User $user, Ticket $ticket): bool
     {
-        if ($user->role && $user->role->name === 'Admin') {
+        if ($user->hasRole('admin')) {
             return true;
         }
 
@@ -58,7 +56,7 @@ class TicketPolicy
      */
     public function delete(User $user, Ticket $ticket): bool
     {
-        if ($user->role && $user->role->name === 'Admin') {
+        if ($user->hasRole('admin')) {
             return true;
         }
 
@@ -73,9 +71,7 @@ class TicketPolicy
      */
     public function buy(User $user, Ticket $ticket): bool
     {
-        // According to Permission Matrix: only regular 'User' can execute 'Buy' operation.
-        // Guests cannot buy without registering/logging in first.
-        return $user->role && $user->role->name === 'User';
+        return $user->hasRole('user');
     }
 
     /**
@@ -83,7 +79,7 @@ class TicketPolicy
      */
     public function manageStatus(User $user, Ticket $ticket): bool
     {
-        if ($user->role && $user->role->name === 'Admin') {
+        if ($user->hasRole('admin')) {
             return true;
         }
 

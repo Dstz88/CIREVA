@@ -24,6 +24,9 @@ class EnsureOrganizerVerified
 
         $status = $user->organizerProfile->status->value ?? (string) $user->organizerProfile->status;
         if (!in_array(strtolower($status), ['approved', 'verified'])) {
+            if ($request->routeIs('organizer.dashboard')) {
+                return $next($request);
+            }
             return redirect()->route('organizer.dashboard')->with('warning', 'Akun Mitra Organizer Anda masih menunggu verifikasi dari Admin. Fitur pembuatan event dan master data akan aktif setelah diverifikasi.');
         }
 

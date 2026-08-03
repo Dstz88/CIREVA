@@ -85,7 +85,7 @@ class OrganizerController extends Controller
     public function update(Request $request)
     {
         // The admin update path for verify/reject vs organizer update path
-        if ($request->has('status') && Auth::user()->role->name === 'Admin') {
+        if ($request->has('status') && Auth::user()?->hasRole('admin')) {
             // Admin approving/rejecting
             $profile = OrganizerProfile::findOrFail($request->route('organizer_verification'));
             $this->authorize('update', $profile);
@@ -110,7 +110,9 @@ class OrganizerController extends Controller
 
         $validated = $request->validate([
             'organization_name' => 'sometimes|string|max:150',
+            'owner_name' => 'sometimes|string|max:150',
             'phone' => 'sometimes|string|max:20',
+            'culture_category' => 'sometimes|string|max:100',
             'address' => 'sometimes|string',
             'description' => 'nullable|string',
             'logo' => 'nullable|string|max:255',

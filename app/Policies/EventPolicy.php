@@ -34,7 +34,7 @@ class eventPolicy
     public function create(User $user): bool
     {
         // Only Admin or Organizer can create new events
-        return $user->role && in_array(strtolower((string) $user->role->name), ['admin', 'organizer']);
+        return $user->hasRole(['admin', 'organizer']);
     }
 
     /**
@@ -43,7 +43,7 @@ class eventPolicy
     public function update(User $user, event $event): bool
     {
         // Admin has universal update rights
-        if ($user->role && strtolower((string) $user->role->name) === 'admin') {
+        if ($user->hasRole('admin')) {
             return true;
         }
 
@@ -59,7 +59,7 @@ class eventPolicy
     public function delete(User $user, event $event): bool
     {
         // Admin has universal delete rights
-        if ($user->role && strtolower((string) $user->role->name) === 'admin') {
+        if ($user->hasRole('admin')) {
             return true;
         }
 
@@ -75,7 +75,7 @@ class eventPolicy
     public function verify(User $user, event $event): bool
     {
         // Only Admin can verify/approve events
-        return $user->role && strtolower((string) $user->role->name) === 'admin';
+        return $user->hasRole('admin');
     }
 
     /**
@@ -83,7 +83,7 @@ class eventPolicy
      */
     public function submit(User $user, event $event): bool
     {
-        if ($user->role && strtolower((string) $user->role->name) === 'admin') {
+        if ($user->hasRole('admin')) {
             return true;
         }
 
@@ -98,7 +98,7 @@ class eventPolicy
      */
     public function publish(User $user, event $event): bool
     {
-        if ($user->role && strtolower((string) $user->role->name) === 'admin') {
+        if ($user->hasRole('admin')) {
             return true;
         }
 
@@ -113,6 +113,6 @@ class eventPolicy
      */
     public function adminApprove(User $user, event $event): bool
     {
-        return $user->role && strtolower((string) $user->role->name) === 'admin';
+        return $user->hasRole('admin');
     }
 }

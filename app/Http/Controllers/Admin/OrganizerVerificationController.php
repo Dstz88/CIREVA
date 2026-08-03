@@ -108,6 +108,17 @@ class OrganizerVerificationController extends Controller
         $user = $organizerVerification->user;
 
         DB::transaction(function () use ($organizerVerification, $user) {
+            $eventIds = \App\Models\event::withTrashed()->where('organizer_profile_id', $organizerVerification->id)->pluck('id');
+            if ($eventIds->isNotEmpty()) {
+                $ticketIds = \App\Models\Ticket::withTrashed()->whereIn('event_id', $eventIds)->pluck('id');
+                if ($ticketIds->isNotEmpty()) {
+                    \App\Models\BookingItem::whereIn('ticket_id', $ticketIds)->delete();
+                    \App\Models\Ticket::withTrashed()->whereIn('id', $ticketIds)->forceDelete();
+                }
+                \App\Models\eventSchedule::whereIn('event_id', $eventIds)->delete();
+                \App\Models\event::withTrashed()->whereIn('id', $eventIds)->forceDelete();
+            }
+
             \App\Models\CooperationAgreement::where('organizer_profile_id', $organizerVerification->id)->forceDelete();
             \App\Models\OrganizerDocument::where('organizer_profile_id', $organizerVerification->id)->forceDelete();
             $organizerVerification->forceDelete();

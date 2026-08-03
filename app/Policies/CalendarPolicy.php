@@ -31,7 +31,7 @@ class CalendarPolicy
      */
     public function create(User $user): bool
     {
-        return $user->role && in_array(strtolower((string) $user->role->name), ['admin', 'organizer']);
+        return $user->hasRole(['admin', 'organizer']);
     }
 
     /**
@@ -39,7 +39,7 @@ class CalendarPolicy
      */
     public function update(User $user, eventSchedule $schedule): bool
     {
-        if ($user->role && strtolower((string) $user->role->name) === 'admin') {
+        if ($user->hasRole('admin')) {
             return true;
         }
 
@@ -52,7 +52,7 @@ class CalendarPolicy
      */
     public function delete(User $user, eventSchedule $schedule): bool
     {
-        if ($user->role && strtolower((string) $user->role->name) === 'admin') {
+        if ($user->hasRole('admin')) {
             return true;
         }
 

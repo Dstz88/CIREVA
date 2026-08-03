@@ -21,17 +21,7 @@
         <div class="flex-1 flex flex-col min-w-0">
             <!-- Top Navbar Search & Profile -->
             <header
-                class="bg-white border-b border-slate-100 py-4 px-8 flex items-center justify-between sticky top-0 z-10 shadow-sm">
-                <div class="relative w-full max-w-md">
-                    <input type="text" placeholder="Cari event, tempat, atau kategori..."
-                        class="w-full bg-slate-50 text-xs border-0 rounded-full py-2.5 pl-5 pr-10 focus:ring-2 focus:ring-blue-900 focus:bg-white transition placeholder-slate-400">
-                    <svg class="w-4 h-4 text-slate-400 absolute right-4 top-3" fill="none" stroke="currentColor"
-                        viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                </div>
-
+                class="bg-white border-b border-slate-100 py-4 px-8 flex items-center justify-end sticky top-0 z-10 shadow-sm">
                 <div class="flex items-center gap-4">
                     <a href="{{ route('notifications.index') }}"
                         class="relative p-2 text-slate-500 hover:text-slate-700 rounded-full hover:bg-slate-100 transition">
@@ -68,49 +58,14 @@
                     <!-- Middle Calendar Grid Section -->
                     <div class="flex-1 space-y-6">
 
-                        @php
-                            $allEvents = $events ?? collect();
-                            $thisMonthCount = $allEvents->count();
-                            $todayCount = $allEvents->filter(function($ev) {
-                                return $ev->schedules->pluck('start_datetime')->filter(fn($dt) => \Carbon\Carbon::parse($dt)->isToday())->count() > 0;
-                            })->count();
-                            $freeCount = $allEvents->filter(function($ev) {
-                                return ($ev->tickets->min('price') ?? 0) == 0;
-                            })->count();
-                            $paidCount = $allEvents->filter(function($ev) {
-                                return ($ev->tickets->min('price') ?? 0) > 0;
-                            })->count();
-                        @endphp
-                        <!-- Top Stat Cards -->
-                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                            <div
-                                class="bg-white rounded-2xl p-4 text-center border border-slate-100 shadow-sm space-y-1">
-                                <p class="text-2xl font-extrabold text-amber-700">{{ $thisMonthCount }}</p>
-                                <p class="text-xs font-semibold text-slate-500">Bulan Ini</p>
-                            </div>
-                            <div
-                                class="bg-white rounded-2xl p-4 text-center border border-slate-100 shadow-sm space-y-1">
-                                <p class="text-2xl font-extrabold text-amber-700">{{ $todayCount }}</p>
-                                <p class="text-xs font-semibold text-slate-500">Hari Ini</p>
-                            </div>
-                            <div
-                                class="bg-white rounded-2xl p-4 text-center border border-slate-100 shadow-sm space-y-1">
-                                <p class="text-2xl font-extrabold text-amber-700">{{ $freeCount }}</p>
-                                <p class="text-xs font-semibold text-slate-500">Gratis</p>
-                            </div>
-                            <div
-                                class="bg-white rounded-2xl p-4 text-center border border-slate-100 shadow-sm space-y-1">
-                                <p class="text-2xl font-extrabold text-amber-700">{{ $paidCount }}</p>
-                                <p class="text-xs font-semibold text-slate-500">Berbayar</p>
-                            </div>
-                        </div>
+
 
                         <!-- Main Calendar Box -->
                         <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-100 space-y-4">
                             @php
-                                $currentDate = \Carbon\Carbon::now();
-                                $year = $currentDate->year;
-                                $month = $currentDate->month;
+                                $calMonth = isset($cMonth) ? $cMonth : \Carbon\Carbon::now()->startOfMonth();
+                                $year = $calMonth->year;
+                                $month = $calMonth->month;
 
                                 $startOfMonth = \Carbon\Carbon::createFromDate($year, $month, 1)->startOfDay();
                                 $endOfMonth = $startOfMonth->copy()->endOfMonth()->endOfDay();
@@ -118,6 +73,9 @@
                                 // ISO day of week: 1 (Mon) to 7 (Sun)
                                 $startDayOfWeek = $startOfMonth->dayOfWeekIso; 
                                 $daysInMonth = $startOfMonth->daysInMonth;
+
+                                $prevMonthUrl = route('calendar.index', array_merge(request()->query(), ['month' => $calMonth->copy()->subMonth()->format('Y-m')]));
+                                $nextMonthUrl = route('calendar.index', array_merge(request()->query(), ['month' => $calMonth->copy()->addMonth()->format('Y-m')]));
 
                                 // Build event lookup array keyed by date format Y-m-d
                                 $eventsByDate = [];
@@ -136,12 +94,20 @@
 
                             <div
                                 class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
-                                <div class="flex items-center gap-3">
-                                    <h3 class="text-xl font-extrabold text-slate-900">{{ $currentDate->translatedFormat('F Y') }}</h3>
-                                    <div
-                                        class="flex items-center border border-slate-200 rounded-lg overflow-hidden text-xs">
-                                        <button class="px-3 py-1 font-semibold text-slate-700 bg-slate-50">Hari Ini</button>
-                                    </div>
+                                <h3 class="text-xl font-extrabold text-slate-900">{{ $calMonth->translatedFormat('F Y') }}</h3>
+                                <div class="flex items-center gap-2">
+                                    <a href="{{ $prevMonthUrl }}"
+                                        class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl transition text-xs font-bold flex items-center gap-1">
+                                        &larr; Bulan Sebelumnya
+                                    </a>
+                                    <a href="{{ route('calendar.index') }}"
+                                        class="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-slate-950 rounded-xl transition text-xs font-bold">
+                                        Bulan Ini
+                                    </a>
+                                    <a href="{{ $nextMonthUrl }}"
+                                        class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl transition text-xs font-bold flex items-center gap-1">
+                                        Bulan Selanjutnya &rarr;
+                                    </a>
                                 </div>
                             </div>
 
@@ -183,7 +149,7 @@
                                                 @php
                                                     $cellDateStr = sprintf('%04d-%02d-%02d', $year, $month, $dayCounter);
                                                     $dayEvents = $eventsByDate[$cellDateStr] ?? [];
-                                                    $isToday = $currentDate->isSameDay(\Carbon\Carbon::createFromDate($year, $month, $dayCounter));
+                                                    $isToday = \Carbon\Carbon::now()->isSameDay(\Carbon\Carbon::createFromDate($year, $month, $dayCounter));
                                                 @endphp
                                                 <td class="p-1.5 border {{ $isToday ? 'border-2 border-indigo-500 bg-indigo-50/40' : 'border-indigo-100' }} font-bold">
                                                     <span class="{{ $isToday ? 'text-indigo-900 font-extrabold' : '' }}">{{ $dayCounter }}</span>

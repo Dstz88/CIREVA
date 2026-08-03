@@ -15,8 +15,7 @@ class TransactionPolicy
      */
     public function viewAny(User $user): bool
     {
-        // Admin, User, and Organizer all have access to lists (scoping is done in controller)
-        return $user->role && in_array($user->role->name, ['Admin', 'User', 'Organizer']);
+        return $user->hasRole(['admin', 'user', 'organizer']);
     }
 
     /**
@@ -24,18 +23,15 @@ class TransactionPolicy
      */
     public function view(User $user, Transaction $transaction): bool
     {
-        // Admin has universal read access
-        if ($user->role && $user->role->name === 'Admin') {
+        if ($user->hasRole('admin')) {
             return true;
         }
 
-        // User can only view transactions related to their own bookings
-        if ($user->role && $user->role->name === 'User') {
+        if ($user->hasRole('user')) {
             return $transaction->booking && $user->id === $transaction->booking->user_id;
         }
 
-        // Organizer can view transactions if the booking contains tickets for their events (Revenue Monitoring)
-        if ($user->role && $user->role->name === 'Organizer') {
+        if ($user->hasRole('organizer')) {
             $organizerProfile = $user->organizerProfile;
 
             if (!$organizerProfile || !$transaction->booking) {
@@ -57,8 +53,7 @@ class TransactionPolicy
      */
     public function create(User $user): bool
     {
-        // Only normal users create transactions (when initiating payment)
-        return $user->role && $user->role->name === 'User';
+        return $user->hasRole('user');
     }
 
     /**
@@ -66,12 +61,11 @@ class TransactionPolicy
      */
     public function update(User $user, Transaction $transaction): bool
     {
-        if ($user->role && $user->role->name === 'Admin') {
+        if ($user->hasRole('admin')) {
             return true;
         }
 
-        // Users can update (e.g. attach proof) to their own transactions
-        if ($user->role && $user->role->name === 'User') {
+        if ($user->hasRole('user')) {
             return $transaction->booking && $user->id === $transaction->booking->user_id;
         }
 
@@ -83,8 +77,7 @@ class TransactionPolicy
      */
     public function delete(User $user, Transaction $transaction): bool
     {
-        // Only Admin can delete transactions
-        return $user->role && $user->role->name === 'Admin';
+        return $user->hasRole('admin');
     }
 
     /**
@@ -92,7 +85,6 @@ class TransactionPolicy
      */
     public function verify(User $user, Transaction $transaction): bool
     {
-        // Only Admin is authorized to verify and confirm payment statuses
-        return $user->role && $user->role->name === 'Admin';
+        return $user->hasRole('admin');
     }
 }

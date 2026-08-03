@@ -39,12 +39,12 @@
                             <button @click="tab = 'upcoming'"
                                 :class="tab === 'upcoming' ? 'bg-amber-500 text-slate-950 font-bold' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'"
                                 class="px-5 py-2.5 rounded-full text-xs transition">
-                                📅 event Akan Datang ({{ $upcomingevents->count() }})
+                                📅 Event Akan Datang ({{ $upcomingevents->count() }})
                             </button>
                             <button @click="tab = 'past'"
                                 :class="tab === 'past' ? 'bg-amber-500 text-slate-950 font-bold' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'"
                                 class="px-5 py-2.5 rounded-full text-xs transition">
-                                ⌛ event Sudah Berlalu ({{ $pastevents->count() }})
+                                ⌛ Event Sudah Berlalu ({{ $pastevents->count() }})
                             </button>
                         </div>
                     </div>

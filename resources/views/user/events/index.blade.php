@@ -8,17 +8,7 @@
         <div class="flex-1 flex flex-col min-w-0">
             <!-- Top Navbar Search & Profile -->
             <header
-                class="bg-white border-b border-slate-100 py-4 px-8 flex items-center justify-between sticky top-0 z-10 shadow-sm">
-                <div class="relative w-full max-w-md">
-                    <input type="text" placeholder="Cari event, tempat, atau kategori..."
-                        class="w-full bg-slate-50 text-xs border-0 rounded-full py-2.5 pl-5 pr-10 focus:ring-2 focus:ring-blue-900 focus:bg-white transition placeholder-slate-400">
-                    <svg class="w-4 h-4 text-slate-400 absolute right-4 top-3" fill="none" stroke="currentColor"
-                        viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                </div>
-
+                class="bg-white border-b border-slate-100 py-4 px-8 flex items-center justify-end sticky top-0 z-10 shadow-sm">
                 <div class="flex items-center gap-4">
                     <!-- Notification Bell -->
                     <x-notification-bell />
@@ -39,8 +29,8 @@
 
                 <!-- Page Title -->
                 <div>
-                    <h1 class="text-2xl font-black text-slate-900 tracking-tight">Informasi event</h1>
-                    <p class="text-xs text-slate-500 mt-1">Temukan berbagai event budaya terbaik di Kota Cirebon.</p>
+                    <h1 class="text-2xl font-black text-slate-900 tracking-tight">Informasi Event</h1>
+                    <p class="text-xs text-slate-500 mt-1">Temukan berbagai Event budaya terbaik di Kota Cirebon.</p>
                 </div>
 
                 <!-- Top Filter Inputs Box -->
@@ -105,7 +95,7 @@
                     <!-- LEFT event CARDS (3 COLS) -->
                     <div class="lg:col-span-3 space-y-6">
                         <div class="text-xs font-bold text-slate-500">
-                            Menampilkan {{ $events->total() }} event
+                            Menampilkan {{ $events->total() }} Event
                         </div>
 
                         <!-- 4 Columns Cards Grid -->
@@ -213,8 +203,7 @@
                         <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm space-y-3">
                             <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
                                 <h3 class="font-bold text-slate-900 text-xs">Kategori event</h3>
-                                <a href="{{ route('events.index') }}"
-                                    class="text-[10px] font-bold text-blue-900 hover:underline">Lihat Semua &rsaquo;</a>
+                                
                             </div>
                             <div class="space-y-2 text-xs">
                                 <a href="{{ route('events.index', ['category' => 'Festival Budaya']) }}"
@@ -235,47 +224,46 @@
                         <!-- event Mendatang Card -->
                         <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm space-y-3">
                             <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
-                                <h3 class="font-bold text-slate-900 text-xs">event Mendatang</h3>
-                                <a href="{{ route('events.index') }}"
-                                    class="text-[10px] font-bold text-blue-900 hover:underline">Lihat Semua &rsaquo;</a>
+                                <h3 class="font-bold text-slate-900 text-xs">Event Mendatang</h3>
+                                
                             </div>
 
                             <div class="space-y-3">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-12 h-12 rounded-xl bg-slate-900 text-white flex items-center justify-center shrink-0 font-bold text-xs bg-cover bg-center"
-                                        style="background-image: url('https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=150');">
-                                    </div>
-                                    <div class="flex-1 min-w-0">
-                                        <h4 class="font-bold text-slate-900 text-xs truncate">Festival Topeng Cirebon
-                                            2026</h4>
-                                        <p class="text-[10px] text-slate-400 mt-0.5">20-23 Juli 2026</p>
-                                        <p class="text-[10px] text-slate-400 truncate">Keraton Kasepuhan</p>
-                                    </div>
-                                </div>
+                                @php
+                                    $upcomingList = $upcomingEvents ?? \App\Models\Event::with(['location', 'schedules'])
+                                        ->where('status', 'published')
+                                        ->latest()
+                                        ->take(3)
+                                        ->get();
+                                @endphp
 
-                                <div class="flex items-center gap-3">
-                                    <div class="w-12 h-12 rounded-xl bg-slate-900 text-white flex items-center justify-center shrink-0 font-bold text-xs bg-cover bg-center"
-                                        style="background-image: url('https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=150');">
-                                    </div>
-                                    <div class="flex-1 min-w-0">
-                                        <h4 class="font-bold text-slate-900 text-xs truncate">Cirebon Night Heritage
-                                        </h4>
-                                        <p class="text-[10px] text-slate-400 mt-0.5">5-7 Agustus 2026</p>
-                                        <p class="text-[10px] text-slate-400 truncate">Kawasan Pecinan Cirebon</p>
-                                    </div>
-                                </div>
-
-                                <div class="flex items-center gap-3">
-                                    <div class="w-12 h-12 rounded-xl bg-slate-900 text-white flex items-center justify-center shrink-0 font-bold text-xs bg-cover bg-center"
-                                        style="background-image: url('https://images.unsplash.com/photo-1544644181-1484b3fdfc62?w=150');">
-                                    </div>
-                                    <div class="flex-1 min-w-0">
-                                        <h4 class="font-bold text-slate-900 text-xs truncate">Sedekah Bumi Gunung Jati
-                                        </h4>
-                                        <p class="text-[10px] text-slate-400 mt-0.5">10 September 2026</p>
-                                        <p class="text-[10px] text-slate-400 truncate">Gunung Jati</p>
-                                    </div>
-                                </div>
+                                @forelse($upcomingList as $upEvent)
+                                    @php
+                                        $upBanner = asset('image/fotosatu.jpeg');
+                                        if ($upEvent->banner) {
+                                            $upBanner = \Illuminate\Support\Str::startsWith($upEvent->banner, ['http://', 'https://'])
+                                                ? $upEvent->banner
+                                                : \Illuminate\Support\Facades\Storage::url($upEvent->banner);
+                                        }
+                                        $upSched = $upEvent->schedules->first();
+                                        $upDate = $upSched?->start_datetime
+                                            ? \Carbon\Carbon::parse($upSched->start_datetime)->format('d M Y')
+                                            : 'Jadwal Terjadwal';
+                                    @endphp
+                                    <a href="{{ route('events.show', $upEvent->slug ?? $upEvent->id) }}" class="flex items-center gap-3 group">
+                                        <div class="w-12 h-12 rounded-xl bg-slate-900 text-white flex items-center justify-center shrink-0 font-bold text-xs overflow-hidden">
+                                            <img src="{{ $upBanner }}" alt="{{ $upEvent->title }}" class="w-full h-full object-cover group-hover:scale-105 transition"
+                                                onerror="this.onerror=null; this.src='{{ asset('image/fotosatu.jpeg') }}';">
+                                        </div>
+                                        <div class="flex-1 min-w-0">
+                                            <h4 class="font-bold text-slate-900 text-xs truncate group-hover:text-blue-900 transition">{{ $upEvent->title }}</h4>
+                                            <p class="text-[10px] text-slate-400 mt-0.5">{{ $upDate }}</p>
+                                            <p class="text-[10px] text-slate-400 truncate">{{ $upEvent->location->name ?? $upEvent->location->city ?? '-' }}</p>
+                                        </div>
+                                    </a>
+                                @empty
+                                    <p class="text-xs text-slate-400 text-center py-2">Belum ada event mendatang.</p>
+                                @endforelse
                             </div>
                         </div>
 
@@ -293,7 +281,7 @@
     <div class="bg-gradient-to-b from-slate-50 to-white pt-10 pb-6 text-center">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-2">
             <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-                Temukan event Budaya
+                Temukan Event Budaya
             </h1>
             <p class="text-xs sm:text-sm text-slate-500 max-w-2xl mx-auto leading-relaxed">
                 Jelajahi kekayaan warisan Cirebon melalui pagelaran seni, festival kuliner, dan pameran sejarah yang
@@ -471,64 +459,13 @@
                             </div>
                         </div>
                         @empty
-                        @php
-                        $sampleevents = [
-                        ['title' => 'Festival Kuliner Empal Gentong', 'cat' => 'Kuliner', 'date' => '15 - 17 Agustus
-                        2024', 'loc' => 'Alun-alun Kasepuhan', 'price' => 'Rp 50.000', 'img' =>
-                        'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=600'],
-                        ['title' => 'Festival Topeng Cirebon 2026', 'cat' => 'Musik', 'date' => '22 September 2024',
-                        'loc' => 'Keraton Kanoman', 'price' => 'Rp 120.000', 'img' =>
-                        'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?q=80&w=600'],
-                        ['title' => 'Eksplorasi Batik Megamendung', 'cat' => 'Pameran', 'date' => '1 - 10 Oktober 2024',
-                        'loc' => 'Galeri Seni Cirebon', 'price' => 'Gratis', 'img' =>
-                        'https://images.unsplash.com/photo-1606744888344-493238951221?q=80&w=600']
-                        ];
-                        @endphp
-                        @foreach($sampleevents as $se)
-                        <div
-                            class="bg-white rounded-3xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-lg transition duration-300 flex flex-col justify-between">
-                            <div class="h-44 relative bg-slate-800 overflow-hidden">
-                                <img src="{{ $se['img'] }}" alt="{{ $se['title'] }}" class="w-full h-full object-cover">
-                                <div class="absolute top-3 left-3">
-                                    <span
-                                        class="bg-white/90 backdrop-blur-md text-slate-900 text-[10px] font-bold px-3 py-1 rounded-full shadow-sm">
-                                        {{ $se['cat'] }}
-                                    </span>
-                                </div>
-                            </div>
-
-                            <div class="p-5 flex-1 flex flex-col justify-between space-y-4">
-                                <div class="space-y-2">
-                                    <h3 class="text-base font-extrabold text-slate-900 line-clamp-1">
-                                        {{ $se['title'] }}
-                                    </h3>
-                                    <div class="space-y-1 text-[11px] text-slate-500">
-                                        <div class="flex items-center gap-1.5">
-                                            <span>{{ $se['date'] }}</span>
-                                        </div>
-                                        <div class="flex items-center gap-1.5">
-                                            <span class="truncate">{{ $se['loc'] }}</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="pt-3 border-t border-gray-100 flex items-center justify-between">
-                                    <div>
-                                        <p class="text-[9px] font-extrabold text-slate-400 tracking-wider uppercase">
-                                            MULAI DARI</p>
-                                        <p class="text-sm font-extrabold text-slate-900">{{ $se['price'] }}</p>
-                                    </div>
-                                    <a href="{{ route('events.index') }}"
-                                        class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-900 text-slate-700 hover:text-white flex items-center justify-center transition shadow-sm">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                                        </svg>
-                                    </a>
-                                </div>
-                            </div>
+                        <div class="col-span-full py-12 text-center text-slate-400 bg-white rounded-3xl border border-gray-100 shadow-sm space-y-2">
+                            <svg class="w-10 h-10 mx-auto text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                            <p class="font-bold text-slate-700 text-sm">Belum ada Event.</p>
+                            <p class="text-xs text-slate-400">Event kebudayaan akan muncul di sini setelah dipublikasikan.</p>
                         </div>
-                        @endforeach
                         @endforelse
                     </div>
 

@@ -4,44 +4,26 @@
         <div
             class="relative rounded-3xl overflow-hidden shadow-2xl min-h-[480px] flex items-center justify-center text-center px-6 py-16 bg-slate-900">
             <!-- Background Image with Overlay -->
-            <img src="https://images.unsplash.com/photo-1544644181-1484b3fdfc62?q=80&w=1600&auto=format&fit=crop"
+            <img src="image/fotoatas.jpeg"
                 alt="Cirebon Cultural Heritage"
-                class="absolute inset-0 w-full h-full object-cover object-center opacity-30 mix-blend-luminosity">
-            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/60 to-transparent"></div>
+                class="absolute inset-0 w-full h-full object-cover object-center opacity-90">
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/80 to-transparent"></div>
 
             <!-- Content -->
             <div class="relative z-10 max-w-3xl mx-auto space-y-6">
                 <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-tight">
-                    Experience the <span class="text-amber-400 font-serif italic">Soul</span> of Cirebon
+                    Rasakan <span class="text-amber-400 font-serif italic">Jiwa</span> Cirebon
                 </h1>
                 <p class="text-base sm:text-lg text-slate-300 font-normal max-w-2xl mx-auto leading-relaxed">
-                    Discover, book, and immerse yourself in the rich cultural heritage and vibrant events of the city of
-                    guardians.
+                    Jelajahi, pesan, dan serap pengalaman kaya warisan budaya serta acara-acara meriah dari kota para
+                    wali.
                 </p>
 
-                <!-- Search Pill Bar -->
-                <form action="{{ route('events.index') }}" method="GET" class="mt-8 max-w-2xl mx-auto">
-                    <div
-                        class="flex items-center bg-white/10 backdrop-blur-md border border-white/20 rounded-full p-2 pl-5 shadow-2xl">
-                        <svg class="w-5 h-5 text-slate-300 shrink-0 mr-3" fill="none" stroke="currentColor"
-                            viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                        </svg>
-                        <input type="text" name="search" placeholder="Search events, categories, or dates..."
-                            class="w-full bg-transparent text-white placeholder-slate-400 text-sm focus:outline-none border-none focus:ring-0">
-                        <button type="submit"
-                            class="bg-amber-400 hover:bg-amber-500 text-slate-950 font-bold px-6 py-2.5 rounded-full text-sm flex items-center gap-2 transition shrink-0 shadow-lg">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
-                            </svg>
-                            <span>Explore</span>
-                        </button>
-                    </div>
-                </form>
-            </div>
+                    </button>
+                </div>
+            </form>
         </div>
+    </div>
     </div>
 
     <!-- Highlighted Experience Section -->
@@ -50,10 +32,9 @@
         <div class="flex items-center justify-between mb-6">
             <div class="flex items-center gap-3">
                 <span class="w-1.5 h-7 bg-amber-600 rounded-full"></span>
-                <h2 class="text-2xl font-bold text-slate-900 tracking-tight">event Pilihan (Rekomendasi)</h2>
+                <h2 class="text-2xl font-bold text-slate-900 tracking-tight">Event Pilihan (Rekomendasi)</h2>
             </div>
-            <a href="{{ route('events.index') }}"
-                class="text-sm font-semibold text-amber-700 hover:text-amber-800 transition">Lihat Semua event +</a>
+            
         </div>
 
         <!-- Featured Card -->
@@ -120,15 +101,10 @@
         <div class="flex items-center justify-between mb-6">
             <div class="flex items-center gap-3">
                 <span class="w-1.5 h-7 bg-amber-600 rounded-full"></span>
-                <h2 class="text-2xl font-bold text-slate-900 tracking-tight">event Kebudayaan Terverifikasi (Siap
-                    Tayang)</h2>
+                <h2 class="text-2xl font-bold text-slate-900 tracking-tight">Event Kebudayaan
+                </h2>
             </div>
-            <div class="flex items-center gap-4">
-                <a href="{{ route('calendar.index') }}"
-                    class="text-sm font-semibold text-amber-700 hover:text-amber-800 transition">📅 Kalender Budaya</a>
-                <a href="{{ route('events.index') }}"
-                    class="text-sm font-semibold text-amber-700 hover:text-amber-800 transition">Semua event +</a>
-            </div>
+
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -188,7 +164,7 @@
             </div>
             @empty
             <div class="col-span-full py-12 text-center text-slate-400 bg-white rounded-3xl border border-gray-100">
-                Belum ada event terverifikasi yang sedang tayang.
+                Belum ada Event.
             </div>
             @endforelse
         </div>
@@ -201,9 +177,10 @@
     }])->get();
 
     $catImages = [
-    'Festival Budaya' => 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?q=80&w=800&auto=format&fit=crop',
-    'Ritual Adat' => 'https://images.unsplash.com/photo-1544644181-1484b3fdfc62?q=80&w=800&auto=format&fit=crop',
-    'Kesenian' => 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=800&auto=format&fit=crop',
+    'Festival Budaya' => asset('image/fotosatu.jpeg'),
+    'Ritual Adat' => asset('image/fotodua.jpeg'),
+    'Kesenian Budaya' => asset('image/fototiga.jpeg'),
+    'Kesenian' => asset('image/fototiga.jpeg'),
     ];
     @endphp
 
@@ -212,7 +189,7 @@
         <div class="flex items-center justify-between mb-6">
             <div class="flex items-center gap-3">
                 <span class="w-1.5 h-7 bg-amber-600 rounded-full"></span>
-                <h2 class="text-2xl font-bold text-slate-900 tracking-tight">Kategori event Budaya</h2>
+                <h2 class="text-2xl font-bold text-slate-900 tracking-tight">Kategori Event Budaya</h2>
             </div>
         </div>
 
@@ -221,8 +198,7 @@
             @foreach($dbCategories as $index => $cat)
             @php
             $colSpan = ($index % 3 == 0) ? 'md:col-span-4' : (($index % 3 == 1) ? 'md:col-span-4' : 'md:col-span-4');
-            $img = $catImages[$cat->name] ??
-            'https://images.unsplash.com/photo-1606744888344-493238951221?q=80&w=800&auto=format&fit=crop';
+            $img = $catImages[$cat->name] ?? asset('image/fototiga.jpeg');
             @endphp
             <a href="{{ route('events.index', ['category' => $cat->name]) }}"
                 class="{{ $colSpan }} relative rounded-3xl overflow-hidden h-64 group shadow-sm border border-gray-100 block">

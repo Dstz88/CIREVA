@@ -38,20 +38,6 @@
                                 d="M4 6h16M4 12h16M4 18h16" />
                         </svg>
                     </button>
-                    <!-- Search input -->
-                    <div class="relative max-w-md w-full">
-                        <span
-                            class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                            </svg>
-                        </span>
-                        <input type="text" placeholder="Cari event, tempat, atau kategori..."
-                            class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-full text-xs focus:outline-none focus:border-amber-500 focus:bg-white transition">
-                    </div>
-                </div>
-
                 <!-- Right Top Menu -->
                 <div class="flex items-center gap-4">
                     <a href="{{ route('notifications.index') }}"
@@ -105,14 +91,6 @@
                             class="bg-amber-500 text-slate-950 text-xs font-extrabold px-3 py-1 rounded-full uppercase tracking-wider">
                             {{ $event->category->name ?? 'Festival Budaya' }}
                         </span>
-                        <button
-                            class="bg-white/20 hover:bg-white/30 backdrop-blur-md text-white text-xs font-bold px-3.5 py-1.5 rounded-full flex items-center gap-1.5 transition">
-                            <svg class="w-4 h-4 text-rose-400 fill-current" viewBox="0 0 24 24">
-                                <path
-                                    d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-                            </svg>
-                            <span>Simpan</span>
-                        </button>
                     </div>
 
                     <div class="relative z-10 space-y-3 max-w-3xl">
@@ -232,20 +210,7 @@
                                         <span>Buka di Google Maps</span>
                                     </a>
 
-                                    <div class="pt-3 border-t border-slate-100 space-y-2 text-slate-600">
-                                        <div class="flex justify-between">
-                                            <span>Jarak dari pusat kota</span>
-                                            <strong class="text-slate-900">2,1 km</strong>
-                                        </div>
-                                        <div class="flex justify-between">
-                                            <span>Estimasi waktu tempuh</span>
-                                            <strong class="text-slate-900">7 menit</strong>
-                                        </div>
-                                        <div class="flex justify-between">
-                                            <span>Area parkir tersedia</span>
-                                            <strong class="text-emerald-600">Tersedia</strong>
-                                        </div>
-                                    </div>
+
                                 </div>
                             </div>
                         </div>
@@ -342,7 +307,7 @@
 
                         <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 space-y-5">
                             <div>
-                                <span class="text-xs text-slate-400 font-medium">Harga Mulai</span>
+                               
                                 <div class="flex items-center justify-between mt-1">
                                     <span class="text-2xl font-black text-amber-600">
                                         {{ !$hasTickets || $minPrice == 0 ? 'Gratis' : 'Rp ' . number_format($minPrice,
@@ -470,35 +435,14 @@
                                     </div>
                                 </div>
 
-                                <div class="flex items-start gap-3">
-                                    <span class="text-slate-400 shrink-0 mt-0.5">📞</span>
-                                    <div>
-                                        <span class="text-slate-400 font-medium">Kontak</span>
-                                        <p class="font-bold text-slate-900 mt-0.5">
-                                            {{ $event->organizerProfile->phone ?? '-' }}
-                                        </p>
-                                    </div>
-                                </div>
 
-                                @if($event->organizerProfile && $event->organizerProfile->user &&
-                                $event->organizerProfile->user->email)
-                                <div class="flex items-start gap-3">
-                                    <span class="text-slate-400 shrink-0 mt-0.5">✉️</span>
-                                    <div>
-                                        <span class="text-slate-400 font-medium">Email Penyelenggara</span>
-                                        <p class="font-bold text-amber-600 mt-0.5 break-all">
-                                            {{ $event->organizerProfile->user->email }}
-                                        </p>
-                                    </div>
-                                </div>
-                                @endif
                             </div>
                         </div>
 
                         <!-- event Lainnya Box -->
                         <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 space-y-4">
                             <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-                                <h3 class="font-bold text-slate-900 text-base">event Lainnya</h3>
+                                <h3 class="font-bold text-slate-900 text-base">Event Lainnya</h3>
                                 <a href="{{ route('events.index') }}"
                                     class="text-[11px] font-bold text-amber-600 hover:underline">Lihat Semua
                                     &rsaquo;</a>
@@ -582,14 +526,6 @@
                     class="bg-amber-500 text-slate-950 text-xs font-extrabold px-3 py-1 rounded-full uppercase tracking-wider">
                     {{ $event->category->name }}
                 </span>
-                <a href="{{ route('login') }}"
-                    class="bg-white/20 hover:bg-white/30 backdrop-blur-md text-white text-xs font-bold px-3.5 py-1.5 rounded-full flex items-center gap-1.5 transition">
-                    <svg class="w-4 h-4 text-rose-400 fill-current" viewBox="0 0 24 24">
-                        <path
-                            d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-                    </svg>
-                    <span>Simpan</span>
-                </a>
             </div>
 
             <div class="relative z-10 space-y-3 max-w-3xl">
@@ -694,20 +630,7 @@
                                     <span>Buka di Google Maps</span>
                                 </a>
 
-                                <div class="pt-3 border-t border-slate-100 space-y-2 text-slate-600">
-                                    <div class="flex justify-between">
-                                        <span>Jarak dari pusat kota</span>
-                                        <strong class="text-slate-900">2,1 km</strong>
-                                    </div>
-                                    <div class="flex justify-between">
-                                        <span>Estimasi waktu tempuh</span>
-                                        <strong class="text-slate-900">7 menit</strong>
-                                    </div>
-                                    <div class="flex justify-between">
-                                        <span>Area parkir tersedia</span>
-                                        <strong class="text-emerald-600">Tersedia</strong>
-                                    </div>
-                                </div>
+
                             </div>
                         </div>
                     </div>
@@ -880,24 +803,7 @@
                                 </div>
                             </div>
 
-                            <div class="flex items-start gap-3">
-                                <span class="text-slate-400 shrink-0 mt-0.5">📞</span>
-                                <div>
-                                    <span class="text-slate-400 font-medium">Kontak</span>
-                                    <p class="font-bold text-slate-900 mt-0.5">{{ $event->organizerProfile->phone ??
-                                        '(0231)
-                                        1234567' }}</p>
-                                </div>
-                            </div>
 
-                            <div class="flex items-start gap-3">
-                                <span class="text-slate-400 shrink-0 mt-0.5">🌐</span>
-                                <div>
-                                    <span class="text-slate-400 font-medium">Website</span>
-                                    <p class="font-bold text-amber-600 mt-0.5 break-all">www.disbudpar.cirebonkota.go.id
-                                    </p>
-                                </div>
-                            </div>
                         </div>
                     </div>
 

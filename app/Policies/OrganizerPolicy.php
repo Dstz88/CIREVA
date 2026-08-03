@@ -15,7 +15,7 @@ class OrganizerPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->role && $user->role->name === 'Admin';
+        return $user->hasRole('admin');
     }
 
     /**
@@ -23,7 +23,7 @@ class OrganizerPolicy
      */
     public function view(User $user, OrganizerProfile $organizerProfile): bool
     {
-        if ($user->role && strtolower((string)$user->role->name) === 'admin') {
+        if ($user->hasRole('admin')) {
             return true;
         }
 
@@ -43,7 +43,7 @@ class OrganizerPolicy
      */
     public function update(User $user, OrganizerProfile $organizerProfile): bool
     {
-        if ($user->role && strtolower((string)$user->role->name) === 'admin') {
+        if ($user->hasRole('admin')) {
             return true;
         }
 
@@ -56,7 +56,7 @@ class OrganizerPolicy
     public function delete(User $user, OrganizerProfile $organizerProfile): bool
     {
         // Only Admin can delete an organizer profile
-        return $user->role && $user->role->name === 'Admin';
+        return $user->hasRole('admin');
     }
 
     /**
@@ -65,6 +65,6 @@ class OrganizerPolicy
     public function verify(User $user, OrganizerProfile $organizerProfile): bool
     {
         // Only Admin can verify profiles
-        return $user->role && $user->role->name === 'Admin';
+        return $user->hasRole('admin');
     }
 }

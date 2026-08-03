@@ -16,17 +16,7 @@
         <div class="flex-1 flex flex-col min-w-0">
             <!-- Top Navbar Search & Profile -->
             <header
-                class="bg-white border-b border-slate-100 py-4 px-4 sm:px-8 flex items-center justify-between sticky top-0 z-10 shadow-sm">
-                <div class="relative w-full max-w-xs sm:max-w-md">
-                    <input type="text" x-model="search" placeholder="Cari event, tempat, atau tiket..."
-                        class="w-full bg-slate-50 text-xs border-0 rounded-full py-2.5 pl-5 pr-10 focus:ring-2 focus:ring-blue-900 focus:bg-white transition placeholder-slate-400">
-                    <svg class="w-4 h-4 text-slate-400 absolute right-4 top-3" fill="none" stroke="currentColor"
-                        viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                </div>
-
+                class="bg-white border-b border-slate-100 py-4 px-4 sm:px-8 flex items-center justify-end sticky top-0 z-10 shadow-sm">
                 <div class="flex items-center gap-3 sm:gap-4">
                     <a href="{{ route('notifications.index') }}"
                         class="relative p-2 text-slate-500 hover:text-slate-700 rounded-full hover:bg-slate-100 transition">
@@ -82,53 +72,8 @@
                         </div>
                     </div>
 
-                    <!-- Search Bar & Filters Row -->
-                    <div
-                        class="bg-white p-2 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-3">
-                        <div class="relative flex-1 w-full">
-                            <span
-                                class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                </svg>
-                            </span>
-                            <input type="text" x-model="search" placeholder="Cari nama event atau lokasi..."
-                                class="w-full bg-[#F1F5F9]/80 border-none rounded-xl py-2.5 pl-10 pr-4 text-xs text-slate-800 focus:ring-2 focus:ring-[#D4A359]">
-                        </div>
-
-                        <div
-                            class="flex items-center gap-2 self-end sm:self-center shrink-0 w-full sm:w-auto justify-end">
-                            <select x-model="sortBy"
-                                class="bg-white border border-slate-200 text-slate-700 text-xs font-bold rounded-xl py-2.5 px-3 focus:ring-2 focus:ring-[#D4A359] w-full sm:w-auto">
-                                <option value="newest">Terbaru</option>
-                                <option value="oldest">Terlama</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <!-- Status Tabs Row -->
-                    <div
-                        class="flex items-center gap-6 border-b border-slate-200 text-xs font-extrabold pb-2 overflow-x-auto">
-                        <button type="button" @click="currentTab = 'upcoming'"
-                            :class="currentTab === 'upcoming' ? 'text-[#D4A359] border-b-2 border-[#D4A359]' : 'text-slate-500 hover:text-slate-900'"
-                            class="pb-2 -mb-2.5 flex items-center gap-1.5 whitespace-nowrap transition">
-                            <span>Upcoming ({{ count($tickets) > 0 ? count($tickets) : 2 }})</span>
-                        </button>
-                        <button type="button" @click="currentTab = 'completed'"
-                            :class="currentTab === 'completed' ? 'text-[#D4A359] border-b-2 border-[#D4A359]' : 'text-slate-500 hover:text-slate-900'"
-                            class="pb-2 -mb-2.5 flex items-center gap-1.5 whitespace-nowrap transition">
-                            <span>Completed (0)</span>
-                        </button>
-                        <button type="button" @click="currentTab = 'cancelled'"
-                            :class="currentTab === 'cancelled' ? 'text-[#D4A359] border-b-2 border-[#D4A359]' : 'text-slate-500 hover:text-slate-900'"
-                            class="pb-2 -mb-2.5 flex items-center gap-1.5 whitespace-nowrap transition">
-                            <span>Cancelled (0)</span>
-                        </button>
-                    </div>
-
                     <!-- Ticket Cards Grid -->
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6" x-show="currentTab === 'upcoming'">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         @php
                         $userConfirmedBookings = isset($userBookings) ? $userBookings : [];
                         @endphp
@@ -141,7 +86,7 @@
                         $loc = $event->location->name ?? 'Keraton Kasepuhan, Cirebon';
                         $tCode = $b->booking_code;
                         @endphp
-                        <div x-show="!search || '{{ strtolower($title) }}'.includes(search.toLowerCase()) || '{{ strtolower($loc) }}'.includes(search.toLowerCase())"
+                        <div
                             class="bg-white rounded-3xl border border-slate-200/80 p-4 shadow-sm flex flex-col sm:flex-row gap-4 hover:shadow-md transition duration-300">
 
                             <!-- Left Image Banner Column -->

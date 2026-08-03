@@ -53,6 +53,13 @@ class CalendarController extends Controller
             return view('admin.calendars.index', compact('upcomingevents', 'pastevents'));
         }
 
+        $monthParam = $request->query('month');
+        try {
+            $cMonth = $monthParam ? \Carbon\Carbon::parse($monthParam)->startOfMonth() : \Carbon\Carbon::now()->startOfMonth();
+        } catch (\Exception $e) {
+            $cMonth = \Carbon\Carbon::now()->startOfMonth();
+        }
+
         $schedules = eventSchedule::with(['event.category', 'event.location', 'event.tickets'])->paginate(30);
         $events = \App\Models\event::with(['category', 'location', 'tickets', 'schedules'])
             ->whereIn('status', ['published', 'approved'])
@@ -68,10 +75,10 @@ class CalendarController extends Controller
 
         $roleName = is_object($user?->role) ? strtolower($user->role->name ?? '') : strtolower((string)($user?->role ?? ''));
         if ($roleName === 'organizer') {
-            return view('organizer.calendar.index', compact('schedules', 'events'));
+            return view('organizer.calendar.index', compact('schedules', 'events', 'cMonth'));
         }
 
-        return view('calendar.index', compact('schedules', 'events'));
+        return view('calendar.index', compact('schedules', 'events', 'cMonth'));
     }
 
     public function create(Request $request)

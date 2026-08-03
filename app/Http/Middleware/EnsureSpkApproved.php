@@ -23,11 +23,15 @@ class EnsureSpkApproved
             return redirect()->route('organizer.profile.show')->with('warning', 'Profil organizer belum ditemukan.');
         }
 
-        $hasApprovedSpk = $user->organizerProfile->agreements()
-            ->where('status', 'approved')
+        $profile = $user->organizerProfile;
+        $profileStatus = $profile->status->value ?? (string) $profile->status;
+        $isProfileApproved = in_array(strtolower((string)$profileStatus), ['approved', 'verified']);
+
+        $hasApprovedSpk = $profile->agreements()
+            ->whereIn('status', ['approved', 'signed'])
             ->exists();
 
-        if (!$hasApprovedSpk) {
+        if (!$isProfileApproved && !$hasApprovedSpk) {
             return redirect()->route('organizer.dashboard')->with('warning', 'Surat Perjanjian Kerjasama (SPK 15%) Anda belum disetujui Admin.');
         }
 

@@ -18,7 +18,7 @@
                         <div
                             class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-gray-100 pb-4">
                             <div>
-                                <h3 class="text-xl font-bold text-slate-900">Daftar event Saya</h3>
+                                <h3 class="text-xl font-bold text-slate-900">Daftar Event</h3>
                                 <p class="text-xs text-slate-500 mt-1">Kelola publikasi, jadwal, dan informasi event
                                     kebudayaan Anda.</p>
                             </div>
@@ -57,7 +57,7 @@
                                     class="w-8 h-8 rounded-xl bg-rose-600 text-white flex items-center justify-center font-black text-sm shrink-0">
                                     🗑</div>
                                 <div>
-                                    <div class="font-extrabold text-sm text-rose-950">Informasi Penghapusan event:</div>
+                                    <div class="font-extrabold text-sm text-rose-950">Informasi Penghapusan Event:</div>
                                     <div class="text-rose-800 text-xs mt-0.5">{{ session('info') }}</div>
                                 </div>
                             </div>
@@ -109,9 +109,18 @@
                                             {{ $event->location->name ?? '-' }}
                                         </td>
                                         <td class="px-6 py-4">
+                                            @php
+                                                $statusStr = strtolower($event->status->value ?? (string)$event->status);
+                                                $badgeClass = match($statusStr) {
+                                                    'published', 'approved' => 'bg-emerald-100 text-emerald-800',
+                                                    'submitted', 'under_review' => 'bg-amber-100 text-amber-800',
+                                                    'rejected', 'cancelled' => 'bg-rose-100 text-rose-800',
+                                                    default => 'bg-slate-100 text-slate-700',
+                                                };
+                                            @endphp
                                             <span
-                                                class="px-3 py-1 inline-flex text-[11px] leading-5 font-bold rounded-full bg-amber-100 text-amber-800">
-                                                {{ ucfirst($event->status->value ?? 'Draft') }}
+                                                class="px-3 py-1 inline-flex text-[11px] leading-5 font-bold rounded-full {{ $badgeClass }}">
+                                                {{ ucfirst($event->status->value ?? (string)$event->status) }}
                                             </span>
                                         </td>
                                         <td class="px-6 py-4 text-right space-x-2">

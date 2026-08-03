@@ -59,7 +59,7 @@
                             <div
                                 class="flex justify-between items-center text-amber-800 text-xs font-bold uppercase tracking-wider">
                                 <span>Pending Organizer</span>
-                                <span class="p-2 rounded-xl bg-amber-100 text-amber-700 font-bold text-xs">Aksi</span>
+                               
                             </div>
                             <div class="text-3xl font-black text-amber-700">
                                 {{ number_format($metrics['pending_organizers'] ?? 0) }}
@@ -70,22 +70,7 @@
                             </a>
                         </div>
 
-                        <!-- 4. Pending SPK -->
-                        <div
-                            class="bg-white p-6 rounded-3xl shadow-sm border border-amber-200 bg-amber-50/20 space-y-2">
-                            <div
-                                class="flex justify-between items-center text-amber-800 text-xs font-bold uppercase tracking-wider">
-                                <span>Pending SPK</span>
-                                <span class="p-2 rounded-xl bg-amber-100 text-amber-700 font-bold text-xs">SPK</span>
-                            </div>
-                            <div class="text-3xl font-black text-amber-700">
-                                {{ number_format($metrics['pending_spk'] ?? 0) }}
-                            </div>
-                            <a href="{{ route('admin.spk.index') }}"
-                                class="text-[11px] font-bold text-amber-700 hover:underline inline-block">
-                                Review Surat Kerjasama &rarr;
-                            </a>
-                        </div>
+
 
                         <!-- 5. Pending event -->
                         <div
@@ -93,7 +78,7 @@
                             <div
                                 class="flex justify-between items-center text-amber-800 text-xs font-bold uppercase tracking-wider">
                                 <span>Pending event</span>
-                                <span class="p-2 rounded-xl bg-amber-100 text-amber-700 font-bold text-xs">event</span>
+                                
                             </div>
                             <div class="text-3xl font-black text-amber-700">
                                 {{ number_format($metrics['pending_events'] ?? 0) }}
@@ -114,7 +99,7 @@
                             <div class="text-3xl font-black text-slate-900">
                                 {{ number_format($metrics['published_events'] ?? 0) }}
                             </div>
-                            <p class="text-[11px] text-slate-400">event tayang di publik</p>
+                            <p class="text-[11px] text-slate-400">Event tayang di publik</p>
                         </div>
 
                         <!-- 7. Active Tickets -->

@@ -63,10 +63,9 @@ Route::get('/about', fn () => view('about'))->name('about');
 */
 Route::get('/dashboard', function () {
     $user = Auth::user();
-    if ($user && $user->role) {
-        $roleName = is_object($user->role) ? strtolower($user->role->name ?? '') : strtolower((string)$user->role);
-        if ($roleName === 'admin') return redirect('/admin/dashboard');
-        if ($roleName === 'organizer') return redirect('/organizer/dashboard');
+    if ($user) {
+        if ($user->hasRole('admin')) return redirect('/admin/dashboard');
+        if ($user->hasRole('organizer')) return redirect('/organizer/dashboard');
     }
     return redirect('/user/dashboard');
 })->middleware(['auth'])->name('dashboard');
@@ -201,3 +200,33 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 });
 
 require __DIR__ . '/auth.php';
+
+/*
+|--------------------------------------------------------------------------
+| Debug Login Route
+|--------------------------------------------------------------------------
+*/
+Route::get('/debug-login', function () {
+    $user = \App\Models\User::where('email', 'evalitamaria00@gmail.com')->first();
+    
+    if (!$user) {
+        return response()->json([
+            'status' => 'not_found',
+            'message' => 'User evalitamaria00@gmail.com tidak ditemukan di database'
+        ]);
+    }
+    
+    $profile = $user->organizerProfile;
+    
+    return response()->json([
+        'status' => 'found',
+        'user' => [
+            'id' => $user->id,
+            'name' => $user->name,
+            'email' => $user->email,
+            'role' => $user->role,
+            'has_profile' => (bool) $profile,
+            'profile_status' => $profile?->status?->value ?? null,
+        ]
+    ]);
+});

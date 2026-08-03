@@ -85,13 +85,23 @@ class EventController extends Controller
     {
         $this->authorize('view', $event);
 
+        $event->load(['category', 'location', 'organizerProfile.user', 'schedules', 'tickets']);
+
+        $otherEvents = Event::with(['category', 'location', 'schedules'])
+            ->where('id', '!=', $event->id)
+            ->whereIn('status', ['published', 'approved'])
+            ->latest()
+            ->take(3)
+            ->get();
+
         if (request()->wantsJson()) {
             return response()->json([
-                'data' => $event
+                'data' => $event,
+                'other_events' => $otherEvents
             ]);
         }
 
-        return view('user.events.show', compact('event'));
+        return view('user.events.show', compact('event', 'otherEvents'));
     }
 
     /**

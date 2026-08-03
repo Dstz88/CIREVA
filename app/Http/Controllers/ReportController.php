@@ -36,9 +36,9 @@ class ReportController extends Controller
             }
             
             $user = Auth::user();
-            if ($user && $user->role->name === 'Organizer') {
+            if ($user && $user->hasRole('organizer')) {
                 return view('organizer.reports.index', compact('report', 'revenue'));
-            } elseif ($user && $user->role->name === 'Admin') {
+            } elseif ($user && $user->hasRole('admin')) {
                 return view('admin.reports.index', compact('report', 'revenue'));
             }
 

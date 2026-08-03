@@ -7,18 +7,7 @@
         <div class="flex-1 flex flex-col min-w-0">
             <!-- Top Navbar Search & Profile -->
             <header
-                class="bg-white border-b border-slate-100 py-4 px-8 flex items-center justify-between sticky top-0 z-10 shadow-sm">
-                <!-- Search Bar -->
-                <div class="relative w-full max-w-md">
-                    <input type="text" placeholder="Cari event, tempat, atau kategori..."
-                        class="w-full bg-slate-50 text-xs border-0 rounded-full py-2.5 pl-5 pr-10 focus:ring-2 focus:ring-blue-900 focus:bg-white transition placeholder-slate-400">
-                    <svg class="w-4 h-4 text-slate-400 absolute right-4 top-3" fill="none" stroke="currentColor"
-                        viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                </div>
-
+                class="bg-white border-b border-slate-100 py-4 px-8 flex items-center justify-end sticky top-0 z-10 shadow-sm">
                 <!-- Right Header Actions -->
                 <div class="flex items-center gap-6">
                     <!-- Notification Bell -->
@@ -187,7 +176,7 @@
                     <!-- event Populer (Left 8 Cols) -->
                     <div class="lg:col-span-8 space-y-4">
                         <div class="flex items-center justify-between">
-                            <h2 class="text-base font-bold text-slate-900">event Populer Publik</h2>
+                            <h2 class="text-base font-bold text-slate-900">Event Populer Publik</h2>
                             <a href="{{ route('events.index') }}"
                                 class="text-xs font-semibold text-blue-900 hover:underline flex items-center gap-1">
                                 <span>Lihat Semua</span>

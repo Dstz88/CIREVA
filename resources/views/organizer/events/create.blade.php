@@ -56,7 +56,7 @@
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <!-- Judul event -->
                                 <div class="md:col-span-2">
-                                    <x-input-label for="title" value="Judul event / Pertunjukan"
+                                    <x-input-label for="title" value="Judul Event / Pertunjukan"
                                         class="font-bold text-xs text-slate-700" />
                                     <x-text-input id="title" name="title" type="text"
                                         class="mt-1 block w-full text-xs rounded-xl" :value="old('title')" required
@@ -109,7 +109,7 @@
                                             class="fixed inset-0 z-50 bg-slate-900/60 flex items-center justify-center p-4"
                                             x-cloak>
                                             <div class="bg-white rounded-3xl p-6 max-w-md w-full space-y-4 shadow-xl">
-                                                <h4 class="font-bold text-slate-900 text-base">Tambah Lokasi event Baru
+                                                <h4 class="font-bold text-slate-900 text-base">Tambah Lokasi Event Baru
                                                 </h4>
                                                 <form action="{{ route('organizer.locations.store') }}" method="POST"
                                                     class="space-y-4">
@@ -146,7 +146,7 @@
 
                                 <!-- Jenis event (Berbayar / Gratis) -->
                                 <div>
-                                    <x-input-label value="Jenis Tiket Masuk event"
+                                    <x-input-label value="Jenis Tiket Masuk Event"
                                         class="font-bold text-xs text-slate-700 mb-1" />
                                     <div
                                         class="flex items-center gap-6 mt-2 p-3 bg-slate-50 rounded-xl border border-gray-200">
@@ -217,7 +217,7 @@
 
                                 <!-- Deskripsi event -->
                                 <div class="md:col-span-2">
-                                    <x-input-label for="description" value="Deskripsi & Rundown event"
+                                    <x-input-label for="description" value="Deskripsi Event"
                                         class="font-bold text-xs text-slate-700" />
                                     <textarea id="description" name="description" rows="5" required
                                         class="mt-1 block w-full border-gray-300 focus:border-amber-500 focus:ring-amber-500 rounded-xl text-xs"

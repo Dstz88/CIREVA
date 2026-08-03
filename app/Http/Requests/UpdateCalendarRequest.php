@@ -11,7 +11,7 @@ class UpdateCalendarRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user() && in_array(strtolower((string) $this->user()->role->name), ['admin', 'organizer']);
+        return $this->user() && $this->user()->hasRole(['admin', 'organizer']);
     }
 
     /**

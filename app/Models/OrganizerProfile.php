@@ -17,6 +17,17 @@ class OrganizerProfile extends Model
     protected static function booted(): void
     {
         static::deleting(function (OrganizerProfile $profile) {
+            $eventIds = \App\Models\event::withTrashed()->where('organizer_profile_id', $profile->id)->pluck('id');
+            if ($eventIds->isNotEmpty()) {
+                $ticketIds = \App\Models\Ticket::withTrashed()->whereIn('event_id', $eventIds)->pluck('id');
+                if ($ticketIds->isNotEmpty()) {
+                    \App\Models\BookingItem::whereIn('ticket_id', $ticketIds)->delete();
+                    \App\Models\Ticket::withTrashed()->whereIn('id', $ticketIds)->forceDelete();
+                }
+                \App\Models\eventSchedule::whereIn('event_id', $eventIds)->delete();
+                \App\Models\event::withTrashed()->whereIn('id', $eventIds)->forceDelete();
+            }
+
             $profile->agreements()->forceDelete();
             $profile->documents()->forceDelete();
         });
