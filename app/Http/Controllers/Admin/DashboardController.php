@@ -20,8 +20,8 @@ class DashboardController extends Controller
     public function index(): View
     {
         $metrics = [
-            'total_users' => User::where('role', 'user')->count(),
-            'total_organizers' => User::where('role', 'organizer')->count(),
+            'total_users' => User::whereHas('role', fn($q) => $q->where('name', 'user'))->count(),
+            'total_organizers' => User::whereHas('role', fn($q) => $q->where('name', 'organizer'))->count(),
             'pending_organizers' => OrganizerProfile::where('status', 'pending')->count(),
             'pending_spk' => CooperationAgreement::where('status', 'pending')->count(),
             'pending_events' => event::whereIn('status', ['submitted', 'under_review'])->count(),

@@ -17,9 +17,7 @@
                     <div class="flex items-center gap-3">
                         <span class="text-xs text-slate-600 font-medium">Halo, <strong
                                 class="text-slate-900 font-bold">{{ Auth::user()->name }}</strong>!</span>
-                        <div class="w-8 h-8 rounded-full bg-[#0096C7] text-white flex items-center justify-center font-bold text-xs uppercase shadow-sm shrink-0 border border-white">
-                            {{ strtoupper(substr(Auth::user()->name, 0, 2)) }}
-                        </div>
+                        <x-user-avatar size="w-8 h-8" textSize="text-xs" />
                     </div>
                 </div>
             </header>
@@ -30,32 +28,16 @@
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
                     <!-- Left Column Hero Banner (Slider) -->
                     @php
-                    $fallbackSlides = collect([
-                        (object)[
-                            'title' => 'CIREVA',
-                            'subtitle' => 'Temukan dan rasakan pengalaman budaya terbaik di Kota Cirebon.',
-                            'banner_url' => 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=1000&auto=format&fit=crop&q=80'
-                        ],
-                        (object)[
-                            'title' => 'FESTIVAL TARI TOPENG',
-                            'subtitle' => 'Pagelaran seni tradisional keraton terbesar tahun 2026.',
-                            'banner_url' => 'https://images.unsplash.com/photo-1606744882647-8a62f8319f6a?w=1000&auto=format&fit=crop&q=80'
-                        ],
-                        (object)[
-                            'title' => 'BATIK TRUSMI EXHIBITION',
-                            'subtitle' => 'Pameran batik warisan budaya khas Cirebon.',
-                            'banner_url' => 'https://images.unsplash.com/photo-1544717305-2782549b5136?w=1000&auto=format&fit=crop&q=80'
-                        ]
-                    ]);
-
-                    $slides = ($popularevents && $popularevents->count() > 1) ? $popularevents : $fallbackSlides;
+                    $slides = ($popularevents && $popularevents->count() > 0) ? $popularevents : collect();
+                    $hasEvents = $slides->count() > 0;
                     @endphp
 
                     <div x-data="{ 
                             activeSlide: 0, 
-                            totalSlides: {{ count($slides) }},
+                            totalSlides: {{ $hasEvents ? $slides->count() : 1 }},
                             timer: null,
                             startAutoSlide() {
+                                if (!{{ $hasEvents ? 'true' : 'false' }}) return;
                                 if (this.timer) clearInterval(this.timer);
                                 this.timer = setInterval(() => {
                                     this.activeSlide = (this.activeSlide + 1) % this.totalSlides;
@@ -67,47 +49,54 @@
                          }" x-init="startAutoSlide()" @mouseenter="stopAutoSlide()" @mouseleave="startAutoSlide()"
                         class="lg:col-span-8 bg-slate-950 rounded-3xl text-white relative overflow-hidden flex flex-col justify-between shadow-lg min-h-[220px]">
 
-                        <!-- Slide Background Images -->
-                        @foreach($slides as $index => $slide)
-                        @php
-                        $bannerVal = $slide->banner ?? ($slide->banner_url ?? null);
-                        $imgSrc = 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=1000&auto=format&fit=crop&q=80';
-                        if ($bannerVal) {
-                            $imgSrc = Str::startsWith($bannerVal, ['http://', 'https://']) 
-                                ? $bannerVal 
-                                : Storage::url($bannerVal);
-                        }
-                        @endphp
-                        <div x-show="activeSlide === {{ $index }}" 
-                            x-transition:enter="transition ease-out duration-700"
-                            x-transition:enter-start="opacity-0 scale-105"
-                            x-transition:enter-end="opacity-100 scale-100"
-                            x-transition:leave="transition ease-in duration-500"
-                            x-transition:leave-start="opacity-100 scale-100"
-                            x-transition:leave-end="opacity-0 scale-95"
-                            class="absolute inset-0 z-0" x-cloak>
-                            <img src="{{ $imgSrc }}" alt="{{ $slide->title ?? 'Event' }}"
-                                class="w-full h-full object-cover opacity-50"
-                                onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=1000&auto=format&fit=crop&q=80';">
-                            <div
-                                class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/60 to-slate-950/20">
+                        @if($hasEvents)
+                            <!-- Slide Background Images -->
+                            @foreach($slides as $index => $slide)
+                            @php
+                            $bannerVal = $slide->banner ?? null;
+                            $imgSrc = $bannerVal 
+                                ? (Str::startsWith($bannerVal, ['http://', 'https://']) ? $bannerVal : Storage::url($bannerVal))
+                                : null;
+                            @endphp
+                            <div x-show="activeSlide === {{ $index }}" 
+                                x-transition:enter="transition ease-out duration-700"
+                                x-transition:enter-start="opacity-0 scale-105"
+                                x-transition:enter-end="opacity-100 scale-100"
+                                x-transition:leave="transition ease-in duration-500"
+                                x-transition:leave-start="opacity-100 scale-100"
+                                x-transition:leave-end="opacity-0 scale-95"
+                                class="absolute inset-0 z-0" x-cloak>
+                                @if($imgSrc)
+                                    <img src="{{ $imgSrc }}" alt="{{ $slide->title ?? 'Event' }}"
+                                        class="w-full h-full object-cover opacity-90">
+                                @else
+                                    <div class="w-full h-full bg-slate-900 opacity-80"></div>
+                                @endif
+                                <div
+                                    class="absolute inset-0 bg-gradient-to-r from-slate-950/80 via-slate-950/40 to-transparent">
+                                </div>
                             </div>
-                        </div>
-                        @endforeach
-
-                        <!-- Decorative Pattern Overlay -->
-                        <div
-                            class="absolute inset-0 opacity-15 pointer-events-none bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px] z-0">
-                        </div>
+                            @endforeach
+                        @else
+                            <div class="absolute inset-0 z-0 bg-gradient-to-br from-slate-900 via-slate-950 to-slate-900">
+                                <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/60 to-slate-950/20"></div>
+                            </div>
+                        @endif
 
                         <!-- Slide Content -->
                         <div class="relative z-10 p-8 space-y-2 max-w-xl">
-                            <span class="text-xs text-slate-300 font-semibold block">Selamat Datang di</span>
+                            <span class="text-xs text-amber-400 font-bold block">Selamat Datang di</span>
                             <h1 class="text-3xl font-black tracking-wider text-white uppercase">CIREVA</h1>
                             <p class="text-[10px] font-extrabold tracking-widest text-amber-400 uppercase">CULTURE &bull; EVENTS &bull; CONNECTIONS</p>
-                            <p class="text-xs text-slate-300 pt-1 leading-relaxed">
-                                Temukan dan rasakan pengalaman budaya terbaik di Kota Cirebon.
-                            </p>
+                            @if($hasEvents)
+                                <p class="text-xs text-slate-300 pt-1 leading-relaxed">
+                                    Temukan dan rasakan pengalaman budaya terbaik di Kota Cirebon.
+                                </p>
+                            @else
+                                <p class="text-xs text-amber-400/90 pt-1 leading-relaxed font-medium">
+                                    Belum ada event saat ini.
+                                </p>
+                            @endif
                         </div>
 
                         <!-- Bottom Controls & Dots Slider Indicator -->
@@ -121,17 +110,18 @@
                                 </svg>
                             </a>
 
-                            <!-- Interactive Dots Slider Indicator -->
-                            <div
-                                class="flex items-center gap-2 bg-slate-950/50 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10">
-                                @foreach($slides as $index => $slide)
-                                <button type="button" @click="activeSlide = {{ $index }}; startAutoSlide()"
-                                    :class="activeSlide === {{ $index }} ? 'w-5 bg-amber-400 opacity-100' : 'w-2 bg-white opacity-40 hover:opacity-75'"
-                                    class="h-2 rounded-full transition-all duration-300 focus:outline-none"
-                                    title="Slide {{ $index + 1 }}">
-                                </button>
-                                @endforeach
-                            </div>
+                            @if($hasEvents && $slides->count() > 1)
+                                <!-- Interactive Dots Slider Indicator -->
+                                <div
+                                    class="flex items-center gap-2 bg-slate-950/50 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10">
+                                    @foreach($slides as $index => $slide)
+                                    <button type="button" @click="activeSlide = {{ $index }}; startAutoSlide()"
+                                        :class="activeSlide === {{ $index }} ? 'w-5 bg-amber-400 opacity-100' : 'w-2 bg-white opacity-40 hover:opacity-75'"
+                                        class="h-2 rounded-full transition-all duration-300 focus:outline-none"
+                                        aria-label="Go to slide {{ $index + 1 }}"></button>
+                                    @endforeach
+                                </div>
+                            @endif
                         </div>
                     </div>
 
@@ -140,10 +130,7 @@
                         class="lg:col-span-4 bg-[#0B1E48] rounded-3xl p-6 text-white flex flex-col justify-between shadow-lg relative overflow-hidden">
                         <div class="space-y-4">
                             <div class="flex items-center gap-4">
-                                <div
-                                    class="w-14 h-14 rounded-full bg-cyan-500 overflow-hidden shrink-0 border-2 border-white/20 flex items-center justify-center font-bold text-white text-lg">
-                                    {{ strtoupper(substr(Auth::user()->name, 0, 2)) }}
-                                </div>
+                                <x-user-avatar size="w-14 h-14" textSize="text-lg" ring="border-2 border-white/20" />
                                 <div class="space-y-1">
                                     <h3 class="font-extrabold text-base text-white leading-snug">{{ Auth::user()->name }}</h3>
                                     <p class="text-xs text-slate-300">Pengguna</p>

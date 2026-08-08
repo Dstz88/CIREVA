@@ -16,10 +16,7 @@
                     <div class="flex items-center gap-3 pl-2 border-l border-slate-100">
                         <span class="text-xs font-semibold text-slate-700">Halo, <span
                                 class="font-bold text-slate-900">{{ Auth::user()->name }}</span>!</span>
-                        <div
-                            class="w-9 h-9 rounded-full bg-blue-900 text-white flex items-center justify-center font-bold text-xs uppercase shadow-sm">
-                            {{ substr(Auth::user()->name, 0, 2) }}
-                        </div>
+                        <x-user-avatar size="w-9 h-9" textSize="text-xs" />
                     </div>
                 </div>
             </header>

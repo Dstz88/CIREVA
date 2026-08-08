@@ -18,23 +18,12 @@
             <header
                 class="bg-white border-b border-slate-100 py-4 px-4 sm:px-8 flex items-center justify-end sticky top-0 z-10 shadow-sm">
                 <div class="flex items-center gap-3 sm:gap-4">
-                    <a href="{{ route('notifications.index') }}"
-                        class="relative p-2 text-slate-500 hover:text-slate-700 rounded-full hover:bg-slate-100 transition">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                        </svg>
-                        <span
-                            class="absolute top-1 right-1 bg-rose-500 text-white text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full">2</span>
-                    </a>
+                    <x-notification-bell />
 
                     <div class="flex items-center gap-3 pl-2 border-l border-slate-100">
                         <span class="text-xs font-semibold text-slate-700 hidden md:inline">Halo, <span
                                 class="font-bold text-slate-900">{{ Auth::user()->name }}</span>!</span>
-                        <div
-                            class="w-9 h-9 rounded-full bg-blue-900 text-white flex items-center justify-center font-bold text-xs uppercase shadow-sm">
-                            {{ substr(Auth::user()->name, 0, 2) }}
-                        </div>
+                        <x-user-avatar size="w-9 h-9" textSize="text-xs" />
                     </div>
                 </div>
             </header>
@@ -42,6 +31,10 @@
             <!-- Main Body Content -->
             <main class="p-4 sm:p-8 flex-1 space-y-6 flex flex-col justify-between">
                 <div class="space-y-6">
+
+                    @php
+                    $userConfirmedBookings = isset($userBookings) ? $userBookings : (isset($userConfirmedBookings) ? $userConfirmedBookings : []);
+                    @endphp
 
                     <!-- Header Row: Title & Right Stat Cards -->
                     <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
@@ -57,8 +50,7 @@
                         <div class="flex items-center gap-3 shrink-0 overflow-x-auto pb-1 sm:pb-0">
                             <div
                                 class="bg-[#F1F5F9] rounded-2xl px-5 py-3 text-center border border-slate-200/60 shadow-sm min-w-[100px]">
-                                <span class="block text-xl font-black text-slate-900">{{ count($tickets) > 0 ?
-                                    count($tickets) : 2 }}</span>
+                                <span class="block text-xl font-black text-slate-900">{{ is_countable($userConfirmedBookings) ? count($userConfirmedBookings) : 0 }}</span>
                                 <span
                                     class="text-[9px] font-extrabold tracking-wider text-slate-500 uppercase block mt-0.5">AKTIF</span>
                             </div>
@@ -74,9 +66,6 @@
 
                     <!-- Ticket Cards Grid -->
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        @php
-                        $userConfirmedBookings = isset($userBookings) ? $userBookings : [];
-                        @endphp
 
                         @forelse($userConfirmedBookings as $b)
                         @foreach($b->items as $item)
@@ -169,78 +158,21 @@
                         </div>
                         @endforeach
                         @empty
-                        @php
-                        $mockTickets = [
-                        ['title' => 'Festival Tari Topeng Cirebon', 'cat' => 'SENI TARI', 'code' => 'CRV-982144', 'date'
-                        => '15 Agustus 2026 • 19:00 WIB', 'loc' => 'Keraton Kasepuhan, Cirebon', 'badge' => 'Aktif • Lunas',
-                        'img' => 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400'],
-                        ['title' => 'Pameran Batik Trusmi 2026', 'cat' => 'PAMERAN', 'code' => 'CRV-441299', 'date' =>
-                        '20 Sep 2026 • 10:00 WIB', 'loc' => 'Desa Trusmi, Cirebon', 'badge' => 'Aktif • Lunas',
-                        'img' => 'https://images.unsplash.com/photo-1606744882647-8a62f8319f6a?w=400']
-                        ];
-                        @endphp
-                        @foreach($mockTickets as $mt)
-                        <div x-show="!search || '{{ strtolower($mt['title']) }}'.includes(search.toLowerCase()) || '{{ strtolower($mt['loc']) }}'.includes(search.toLowerCase())"
-                            class="bg-white rounded-3xl border border-slate-200/80 p-4 shadow-sm flex flex-col sm:flex-row gap-4 hover:shadow-md transition duration-300">
-                            <div
-                                class="w-full sm:w-44 h-48 sm:h-auto rounded-2xl overflow-hidden relative shrink-0 bg-slate-900">
-                                <img src="{{ $mt['img'] }}" alt="{{ $mt['title'] }}" class="w-full h-full object-cover">
-                                <div class="absolute top-3 left-3">
-                                    <span
-                                        class="bg-[#D4A359] text-white text-[9px] font-extrabold px-2.5 py-1 rounded-md uppercase tracking-wider shadow-sm">
-                                        {{ $mt['cat'] }}
-                                    </span>
-                                </div>
-                                <div class="absolute bottom-3 left-3">
-                                    <span
-                                        class="bg-white/90 backdrop-blur-md text-slate-900 text-[10px] font-extrabold px-2.5 py-1 rounded-full shadow-sm flex items-center gap-1">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                                        <span>{{ $mt['badge'] }}</span>
-                                    </span>
-                                </div>
+                        <div class="col-span-full bg-white rounded-3xl border border-slate-200/80 p-12 text-center space-y-4 shadow-sm">
+                            <div class="w-16 h-16 bg-amber-50 rounded-2xl flex items-center justify-center mx-auto text-amber-500 text-2xl">
+                                🎟️
                             </div>
-                            <div class="flex-1 flex flex-col justify-between space-y-3">
-                                <div>
-                                    <div class="flex items-start justify-between gap-2">
-                                        <h3 class="font-black text-slate-900 text-base leading-snug line-clamp-2">
-                                            {{ $mt['title'] }}
-                                        </h3>
-                                        <span class="text-xs font-mono font-bold text-slate-500 shrink-0">
-                                            {{ $mt['code'] }}
-                                        </span>
-                                    </div>
-                                    <div class="space-y-1.5 text-xs text-slate-600 mt-2.5">
-                                        <div class="flex items-center gap-2">
-                                            <svg class="w-4 h-4 text-[#D4A359] shrink-0" fill="none"
-                                                stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                            </svg>
-                                            <span>{{ $mt['date'] }}</span>
-                                        </div>
-                                        <div class="flex items-center gap-2">
-                                            <svg class="w-4 h-4 text-[#D4A359] shrink-0" fill="none"
-                                                stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                                            </svg>
-                                            <span class="truncate">{{ $mt['loc'] }}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="border-b border-dashed border-slate-200"></div>
-                                <div class="flex items-center gap-2 pt-1">
-                                    <button type="button"
-                                        @click="activeTicket = {{ json_encode(['id' => 1, 'title' => $mt['title'], 'code' => $mt['code'], 'location' => $mt['loc'], 'name' => 'Tiket Reguler']) }}; showTicketModal = true"
-                                        class="flex-1 bg-[#D4A359] hover:bg-[#C59B4E] text-slate-950 font-extrabold py-2.5 px-4 rounded-xl text-xs transition shadow-sm text-center">
-                                        Lihat QR E-Ticket
-                                    </button>
-                                </div>
+                            <div class="space-y-1">
+                                <h3 class="font-bold text-slate-900 text-base">Belum Ada E-Tiket</h3>
+                                <p class="text-xs text-slate-500 max-w-sm mx-auto">
+                                    Anda belum memiliki e-tiket event budaya. Jelajahi event budaya Cirebon dan pesan tiket Anda sekarang.
+                                </p>
                             </div>
+                            <a href="{{ route('events.index') }}"
+                                class="inline-flex items-center gap-2 bg-[#D4A359] hover:bg-[#c5954c] text-slate-950 font-bold text-xs px-5 py-2.5 rounded-xl transition shadow-sm">
+                                Jelajahi Event
+                            </a>
                         </div>
-                        @endforeach
                         @endforelse
                     </div>
 

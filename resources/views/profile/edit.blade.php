@@ -14,10 +14,7 @@
                     <div class="flex items-center gap-3 pl-2 border-l border-slate-100">
                         <span class="text-xs font-semibold text-slate-700">Halo, <span
                                 class="font-bold text-slate-900">{{ $user->name }}</span>!</span>
-                        <div
-                            class="w-9 h-9 rounded-full bg-[#0096C7] text-white flex items-center justify-center font-bold text-xs uppercase shadow-sm">
-                            {{ strtoupper(substr($user->name, 0, 2)) }}
-                        </div>
+                        <x-user-avatar ring="ring-2 ring-slate-100" />
                     </div>
                 </div>
             </header>
@@ -64,19 +61,43 @@
                         </div>
                     </div>
 
-                    <form method="POST" action="{{ route('user.profile.update') }}" class="space-y-6">
+                    <form method="POST" action="{{ route('user.profile.update') }}" enctype="multipart/form-data" class="space-y-6">
                         @csrf
                         @method('patch')
 
                         <!-- Profile Avatar Row -->
-                        <div class="flex items-center gap-4">
-                            <div
-                                class="w-16 h-16 rounded-full bg-[#0096C7] text-white flex items-center justify-center font-black text-xl uppercase shadow-sm ring-4 ring-slate-100">
-                                {{ strtoupper(substr($user->name, 0, 2)) }}
+                        <div class="flex items-center gap-6" x-data="{ avatarPreview: '{{ $user->avatar ? Storage::url($user->avatar) : '' }}' }">
+                            <div class="relative group">
+                                <template x-if="avatarPreview">
+                                    <img :src="avatarPreview" alt="{{ $user->name }}"
+                                        class="w-20 h-20 rounded-full object-cover shadow-sm ring-4 ring-slate-100">
+                                </template>
+                                <template x-if="!avatarPreview">
+                                    <div
+                                        class="w-20 h-20 rounded-full bg-[#0096C7] text-white flex items-center justify-center font-black text-2xl uppercase shadow-sm ring-4 ring-slate-100">
+                                        {{ strtoupper(substr($user->name, 0, 2)) }}
+                                    </div>
+                                </template>
                             </div>
-                            <div>
-                                <h4 class="font-bold text-slate-900 text-sm">{{ $user->name }}</h4>
-                                <p class="text-xs text-slate-500">{{ $user->email }}</p>
+
+                            <div class="space-y-2">
+                                <h4 class="font-bold text-slate-900 text-sm">Foto Profil</h4>
+                                <p class="text-xs text-slate-500">Format: JPG, PNG, WEBP (Maksimal 2MB)</p>
+                                <label
+                                    class="inline-flex items-center gap-2 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition cursor-pointer">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    </svg>
+                                    <span>Pilih Foto Baru</span>
+                                    <input type="file" name="avatar" accept="image/*" class="hidden"
+                                        @change="const file = $event.target.files[0]; if (file) { avatarPreview = URL.createObjectURL(file); }">
+                                </label>
+                                @error('avatar')
+                                <p class="text-rose-500 text-[10px] mt-1">{{ $message }}</p>
+                                @enderror
                             </div>
                         </div>
 

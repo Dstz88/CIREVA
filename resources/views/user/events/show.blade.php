@@ -51,10 +51,7 @@
                     </a>
 
                     <div class="flex items-center gap-3 pl-2 border-l border-slate-200">
-                        <div
-                            class="w-8 h-8 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-xs uppercase">
-                            {{ substr(Auth::user()->name, 0, 2) }}
-                        </div>
+                        <x-user-avatar size="w-9 h-9" textSize="text-xs" />
                         <span class="text-xs font-semibold text-slate-700 hidden sm:inline-block">Halo, {{
                             Auth::user()->name }}!</span>
                     </div>
@@ -378,7 +375,7 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
                                     </svg>
-                                    <span>Bagikan event</span>
+                                    <span>Bagikan Event</span>
                                 </button>
                             </div>
                         </div>
@@ -386,7 +383,7 @@
                         <!-- Informasi event Sidebar Box -->
                         <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 space-y-4">
                             <h3 class="font-bold text-slate-900 text-base border-b border-slate-100 pb-3">Informasi
-                                event</h3>
+                                Event</h3>
 
                             <div class="space-y-3.5 text-xs">
                                 <div class="flex items-start gap-3">
@@ -449,41 +446,33 @@
                             </div>
 
                             <div class="space-y-4">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-14 h-14 rounded-xl bg-slate-900 text-white flex items-center justify-center shrink-0 font-bold text-xs bg-cover bg-center"
-                                        style="background-image: url('https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=150');">
-                                        🌃
-                                    </div>
-                                    <div>
-                                        <h4 class="font-bold text-slate-900 text-xs">Cirebon Night Heritage</h4>
-                                        <p class="text-[10px] text-slate-500 mt-0.5">5 – 7 Agustus 2026</p>
-                                        <p class="text-[10px] text-slate-400">Kawasan Pecinan Cirebon</p>
-                                    </div>
-                                </div>
-
-                                <div class="flex items-center gap-3">
-                                    <div class="w-14 h-14 rounded-xl bg-slate-900 text-white flex items-center justify-center shrink-0 font-bold text-xs bg-cover bg-center"
-                                        style="background-image: url('https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=150');">
-                                        🌾
-                                    </div>
-                                    <div>
-                                        <h4 class="font-bold text-slate-900 text-xs">Sedekah Bumi Gunung Jati</h4>
-                                        <p class="text-[10px] text-slate-500 mt-0.5">10 September 2026</p>
-                                        <p class="text-[10px] text-slate-400">Gunung Jati</p>
-                                    </div>
-                                </div>
-
-                                <div class="flex items-center gap-3">
-                                    <div class="w-14 h-14 rounded-xl bg-slate-900 text-white flex items-center justify-center shrink-0 font-bold text-xs bg-cover bg-center"
-                                        style="background-image: url('https://images.unsplash.com/photo-1606744882647-8a62f8319f6a?w=150');">
-                                        🎨
-                                    </div>
-                                    <div>
-                                        <h4 class="font-bold text-slate-900 text-xs">Pameran Batik Cirebon</h4>
-                                        <p class="text-[10px] text-slate-500 mt-0.5">1 – 5 Oktober 2026</p>
-                                        <p class="text-[10px] text-slate-400">Gedung Kesenian Cirebon</p>
-                                    </div>
-                                </div>
+                                @forelse($otherEvents as $item)
+                                    @php
+                                        $bannerPath = $item->banner ?? null;
+                                        $imgUrl = $bannerPath ? (Str::startsWith($bannerPath, ['http://', 'https://']) ? $bannerPath : Storage::url($bannerPath)) : null;
+                                        $schedule = $item->schedules->first();
+                                    @endphp
+                                    <a href="{{ route('events.show', $item->id) }}" class="flex items-center gap-3 group">
+                                        @if($imgUrl)
+                                            <div class="w-14 h-14 rounded-xl bg-slate-900 text-white flex items-center justify-center shrink-0 font-bold text-xs bg-cover bg-center"
+                                                style="background-image: url('{{ $imgUrl }}');">
+                                            </div>
+                                        @else
+                                            <div class="w-14 h-14 rounded-xl bg-slate-900 text-white flex items-center justify-center shrink-0 font-bold text-xs">
+                                                🎭
+                                            </div>
+                                        @endif
+                                        <div>
+                                            <h4 class="font-bold text-slate-900 text-xs group-hover:text-amber-600 transition">{{ $item->title }}</h4>
+                                            <p class="text-[10px] text-slate-500 mt-0.5">
+                                                {{ $schedule ? \Carbon\Carbon::parse($schedule->start_time)->translatedFormat('d M Y') : '-' }}
+                                            </p>
+                                            <p class="text-[10px] text-slate-400">{{ $item->location->name ?? 'Cirebon' }}</p>
+                                        </div>
+                                    </a>
+                                @empty
+                                    <p class="text-xs text-slate-500">Belum ada Event lainnya.</p>
+                                @endforelse
                             </div>
                         </div>
 
@@ -507,7 +496,7 @@
             <span>&rsaquo;</span>
             <a href="{{ route('events.index') }}" class="hover:text-slate-900 transition">Informasi event</a>
             <span>&rsaquo;</span>
-            <span class="font-bold text-slate-800">Detail event</span>
+            <span class="font-bold text-slate-800">Detail Event</span>
         </nav>
 
         <!-- HERO CARD -->
@@ -810,47 +799,39 @@
                     <!-- event Lainnya Box -->
                     <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 space-y-4">
                         <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-                            <h3 class="font-bold text-slate-900 text-base">event Lainnya</h3>
+                            <h3 class="font-bold text-slate-900 text-base">Event Lainnya</h3>
                             <a href="{{ route('events.index') }}"
                                 class="text-[11px] font-bold text-amber-600 hover:underline">Lihat Semua &rsaquo;</a>
                         </div>
 
                         <div class="space-y-4">
-                            <div class="flex items-center gap-3">
-                                <div class="w-14 h-14 rounded-xl bg-slate-900 text-white flex items-center justify-center shrink-0 font-bold text-xs bg-cover bg-center"
-                                    style="background-image: url('https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=150');">
-                                    🌃
-                                </div>
-                                <div>
-                                    <h4 class="font-bold text-slate-900 text-xs">Cirebon Night Heritage</h4>
-                                    <p class="text-[10px] text-slate-500 mt-0.5">5 – 7 Agustus 2026</p>
-                                    <p class="text-[10px] text-slate-400">Kawasan Pecinan Cirebon</p>
-                                </div>
-                            </div>
-
-                            <div class="flex items-center gap-3">
-                                <div class="w-14 h-14 rounded-xl bg-slate-900 text-white flex items-center justify-center shrink-0 font-bold text-xs bg-cover bg-center"
-                                    style="background-image: url('https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=150');">
-                                    🌾
-                                </div>
-                                <div>
-                                    <h4 class="font-bold text-slate-900 text-xs">Sedekah Bumi Gunung Jati</h4>
-                                    <p class="text-[10px] text-slate-500 mt-0.5">10 September 2026</p>
-                                    <p class="text-[10px] text-slate-400">Gunung Jati</p>
-                                </div>
-                            </div>
-
-                            <div class="flex items-center gap-3">
-                                <div class="w-14 h-14 rounded-xl bg-slate-900 text-white flex items-center justify-center shrink-0 font-bold text-xs bg-cover bg-center"
-                                    style="background-image: url('https://images.unsplash.com/photo-1606744882647-8a62f8319f6a?w=150');">
-                                    🎨
-                                </div>
-                                <div>
-                                    <h4 class="font-bold text-slate-900 text-xs">Pameran Batik Cirebon</h4>
-                                    <p class="text-[10px] text-slate-500 mt-0.5">1 – 5 Oktober 2026</p>
-                                    <p class="text-[10px] text-slate-400">Gedung Kesenian Cirebon</p>
-                                </div>
-                            </div>
+                            @forelse($otherEvents as $item)
+                                @php
+                                    $bannerPath = $item->banner ?? null;
+                                    $imgUrl = $bannerPath ? (Str::startsWith($bannerPath, ['http://', 'https://']) ? $bannerPath : Storage::url($bannerPath)) : null;
+                                    $schedule = $item->schedules->first();
+                                @endphp
+                                <a href="{{ route('events.show', $item->id) }}" class="flex items-center gap-3 group">
+                                    @if($imgUrl)
+                                        <div class="w-14 h-14 rounded-xl bg-slate-900 text-white flex items-center justify-center shrink-0 font-bold text-xs bg-cover bg-center"
+                                            style="background-image: url('{{ $imgUrl }}');">
+                                        </div>
+                                    @else
+                                        <div class="w-14 h-14 rounded-xl bg-slate-900 text-white flex items-center justify-center shrink-0 font-bold text-xs">
+                                            🎭
+                                        </div>
+                                    @endif
+                                    <div>
+                                        <h4 class="font-bold text-slate-900 text-xs group-hover:text-amber-600 transition">{{ $item->title }}</h4>
+                                        <p class="text-[10px] text-slate-500 mt-0.5">
+                                            {{ $schedule ? \Carbon\Carbon::parse($schedule->start_time)->translatedFormat('d M Y') : '-' }}
+                                        </p>
+                                        <p class="text-[10px] text-slate-400">{{ $item->location->name ?? 'Cirebon' }}</p>
+                                    </div>
+                                </a>
+                            @empty
+                                <p class="text-xs text-slate-500">Belum ada event lainnya.</p>
+                            @endforelse
                         </div>
                     </div>
 

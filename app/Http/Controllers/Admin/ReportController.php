@@ -31,7 +31,7 @@ class ReportController extends Controller
         $organizerPayout = $grossRevenue - $platformCommission;
 
         $totalBookings = Booking::count();
-        $totalOrganizers = User::where('role', 'organizer')->count();
+        $totalOrganizers = User::whereHas('role', fn($q) => $q->where('name', 'organizer'))->count();
         $publishedevents = event::where('status', 'published')->count();
 
         $transactions = $transactionQuery->with(['booking.user', 'booking.items.ticket.event'])->latest()->paginate(10);

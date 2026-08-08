@@ -44,6 +44,17 @@ class TransactionVerificationController extends Controller
                 $transaction->booking->update([
                     'status' => BookingStatus::PaymentCompleted->value ?? 'payment_completed',
                 ]);
+
+                // Kirim notifikasi ke visitor/pembeli
+                if ($transaction->booking->user_id) {
+                    $eventTitle = $transaction->booking->items->first()?->ticket?->event?->title ?? 'Event';
+                    \App\Models\Notification::create([
+                        'user_id' => $transaction->booking->user_id,
+                        'title' => 'Pembayaran Berhasil Diverifikasi 🎉',
+                        'message' => 'Pembayaran transaksi #' . $transaction->transaction_number . ' untuk "' . $eventTitle . '" telah diverifikasi oleh Admin. E-Tiket Anda kini sudah dapat diakses!',
+                        'is_read' => false,
+                    ]);
+                }
             }
         });
 
@@ -71,6 +82,16 @@ class TransactionVerificationController extends Controller
                 $transaction->booking->update([
                     'status' => BookingStatus::Cancelled->value ?? 'cancelled',
                 ]);
+
+                // Kirim notifikasi penolakan ke visitor/pembeli
+                if ($transaction->booking->user_id) {
+                    \App\Models\Notification::create([
+                        'user_id' => $transaction->booking->user_id,
+                        'title' => 'Pembayaran Ditolak',
+                        'message' => 'Pembayaran transaksi #' . $transaction->transaction_number . ' ditolak oleh Admin. Alasan: ' . $request->notes,
+                        'is_read' => false,
+                    ]);
+                }
             }
         });
 
